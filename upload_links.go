@@ -8,7 +8,7 @@ import (
 )
 
 // CreateUploadLink; https://docs.pcloud.com/methods/upload_links/createuploadlink.html
-func (c *PCloudClient) CreateUploadLink(path, comment string, folderID int, isEU bool) (string, string, error) {
+func (c *PCloudClient) CreateUploadLink(path, comment string, folderID int, isEU bool) (link, code string, err error) {
 	values := url.Values{
 		"auth": {*c.Auth},
 	}

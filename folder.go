@@ -89,3 +89,30 @@ func (c *PCloudClient) DeleteFolderRecursive(path string, folderID int, isEU boo
 
 	return checkResult(c.Client.Get(urlBuilder("deletefolderrecursive", values, isEU)))
 }
+
+// CopyFolder; https://docs.pcloud.com/methods/folder/copyfolder.html
+func (c *PCloudClient) CopyFolder(path string, folderID int, toPath string, toFolderID int, isEU bool) error {
+	values := url.Values{
+		"auth": {*c.Auth},
+	}
+
+	switch {
+	case path != "":
+		values.Add("path", path)
+	case folderID >= 0:
+		values.Add("folderid", strconv.Itoa(folderID))
+	default:
+		return errors.New("bad params")
+	}
+
+	switch {
+	case toPath != "":
+		values.Add("topath", toPath)
+	case toFolderID >= 0:
+		values.Add("tofolderid", strconv.Itoa(toFolderID))
+	default:
+		return errors.New("bad params")
+	}
+
+	return checkResult(c.Client.Get(urlBuilder("copyfolder", values, isEU)))
+}

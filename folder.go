@@ -25,6 +25,25 @@ func (c *PCloudClient) CreateFolder(path string, folderID int, name string, isEU
 	return checkResult(c.Client.Get(urlBuilder("createfolder", values, isEU)))
 }
 
+// CreateFolderIfNotExists; https://docs.pcloud.com/methods/folder/createfolderifnotexists.html
+func (c *PCloudClient) CreateFolderIfNotExists(path string, folderID int, name string, isEU bool) error {
+	values := url.Values{
+		"auth": {*c.Auth},
+	}
+
+	switch {
+	case path != "":
+		values.Add("path", path)
+	case folderID >= 0 && name != "":
+		values.Add("folderid", strconv.Itoa(folderID))
+		values.Add("name", name)
+	default:
+		return errors.New("bad params")
+	}
+
+	return checkResult(c.Client.Get(urlBuilder("createfolderifnotexists", values, isEU)))
+}
+
 // func (c *PCloudClient) ListFolder() error {
 //  u := (&url.URL{
 //      Scheme:   apiScheme,

@@ -138,7 +138,7 @@ func (c *PCloudClient) CopyFolder(path string, folderID int, toPath string, toFo
 }
 
 // ListFolder; https://docs.pcloud.com/methods/folder/listfolder.html
-func (c *PCloudClient) ListFolder(path string, folderID, recursive int, isEU bool) error {
+func (c *PCloudClient) ListFolder(path string, folderID, recursive int, isEU bool) (map[string]interface{}, error) {
 	values := url.Values{
 		"auth": {*c.Auth},
 	}
@@ -149,7 +149,7 @@ func (c *PCloudClient) ListFolder(path string, folderID, recursive int, isEU boo
 	case folderID >= 0:
 		values.Add("folderid", strconv.Itoa(folderID))
 	default:
-		return errors.New("bad params")
+		return nil, errors.New("bad params")
 	}
 
 	if recursive > 0 {
@@ -158,14 +158,14 @@ func (c *PCloudClient) ListFolder(path string, folderID, recursive int, isEU boo
 
 	resp, err := c.Client.Get(urlBuilder("listfolder", values, isEU))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var response map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return response, nil
 }
